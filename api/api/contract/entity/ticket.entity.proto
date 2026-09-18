@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+package contract.tickets.entity;
+
+option go_package = "entity;entity_pb";
+
+import "google/protobuf/timestamp.proto";
+import "enum/ticket.enum.proto";
+import "enum/location.enum.proto";
+
+message TicketBuild {
+  int64 id = 1;
+  int64 user_id = 2;
+
+  int32 room = 3;
+  contract.tickets.enum.LocationBuildType location = 4;
+
+  string comment = 5;
+  contract.tickets.enum.TicketType type = 6;
+  contract.tickets.enum.TicketStatus status = 7;
+
+  google.protobuf.Timestamp updated_at = 8;
+  google.protobuf.Timestamp created_at = 9;
+}
+
+message TicketDormitory {
+  int64 id = 1;
+  int64 user_id = 2;
+
+  int32 room = 3;
+  contract.tickets.enum.LocationDormitoryType location = 4;
+
+  string comment = 5;
+  contract.tickets.enum.TicketType type = 6;
+  contract.tickets.enum.TicketStatus status = 7;
+
+  google.protobuf.Timestamp updated_at = 8;
+  google.protobuf.Timestamp created_at = 9;
+}

@@ -1,0 +1,22 @@
+services:
+  ver_app:
+    container_name: "ver_app"
+    build:
+      context: "./app"
+      dockerfile: "Dockerfile"
+    restart: unless-stopped
+    ports:
+      - "3000"
+    networks:
+      - traefik-network
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=traefik-network"
+      - "traefik.http.routers.ver-app-secure.rule=Host(`ver.dvgmu.promotion-pal.ru`)"
+      - "traefik.http.routers.ver-app-secure.entrypoints=websecure"
+      - "traefik.http.routers.ver-app-secure.tls.certresolver=letsencrypt"
+      - "traefik.http.services.ver-app.loadbalancer.server.port=3000"
+
+networks:
+  traefik-network:
+    external: true

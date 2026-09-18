@@ -1,0 +1,7 @@
+storage
+db/postgres
+analytics
+*.test
+coverage.out
+coverage.html
+.git

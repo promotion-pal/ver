@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package contract.tickets.enum;
+
+option go_package = "enum;enum_pb";
+
+enum LocationBuildType {
+  LOCATION_BUILD_UNSPECIFIED = 0;
+  LOCATION_BUILD_FIRST       = 1;
+  LOCATION_BUILD_SECOND      = 2;
+  LOCATION_BUILD_THIRD       = 3;
+  LOCATION_BUILD_STUDY_CLASS = 4;
+}
+
+enum LocationDormitoryType {
+  LOCATION_DORMITORY_TYPE_UNSPECIFIED = 0;
+  LOCATION_DORMITORY_TYPE_SECOND = 1;
+  LOCATION_DORMITORY_TYPE_THIRD = 2;
+  LOCATION_DORMITORY_TYPE_FOURTH = 3;
+}
+
+message LocationCommonType {
+  oneof place {
+    LocationBuildType building = 1;
+    LocationDormitoryType dormitory = 2;
+  }
+}
