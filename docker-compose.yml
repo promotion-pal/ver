@@ -12,7 +12,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=traefik-network"
-      - "traefik.http.routers.ver-app-secure.rule=Host(`ver.dvgmu.promotion-pal.ru`)"
+      - "traefik.http.routers.ver-app-secure.rule=Host(`ver.fesmu.ru`)"
       - "traefik.http.routers.ver-app-secure.entrypoints=websecure"
       - "traefik.http.routers.ver-app-secure.tls.certresolver=letsencrypt"
       - "traefik.http.services.ver-app.loadbalancer.server.port=3000"
