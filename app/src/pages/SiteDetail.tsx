@@ -1,10 +1,10 @@
-import { AlertTriangle, ArrowLeft, ArrowUpRight, FileDown, History, Loader2 } from "lucide-react";
+import { ArrowLeft, ArrowUpRight, History } from "lucide-react";
 import { useMemo, useState } from "react";
 import { Link, Navigate, useParams } from "react-router-dom";
+import { ExportButton } from "@/components/common/ExportButton";
 import { BlockRenderer } from "@/components/blocks/BlockRenderer";
 import { StatusBadge } from "@/components/StatusBadge";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { getSite } from "@/data/sites";
@@ -18,8 +18,6 @@ export function SiteDetail() {
     [site],
   );
   const [versionId, setVersionId] = useState<string | undefined>(versionsNewestFirst[0]?.id);
-  const [isExporting, setIsExporting] = useState(false);
-  const [exportWarning, setExportWarning] = useState<string | null>(null);
 
   if (!site) return <Navigate to="/" replace />;
 
@@ -27,23 +25,12 @@ export function SiteDetail() {
     versionsNewestFirst.find((v) => v.id === versionId) ?? versionsNewestFirst[0];
   const isLatest = selected.id === versionsNewestFirst[0]?.id;
 
-  async function handleExport() {
-    if (!site || isExporting) return;
-    setIsExporting(true);
-    setExportWarning(null);
-    try {
-      const { exportSiteToDocx } = await import("@/lib/docx-export");
-      const { failedImages } = await exportSiteToDocx(site);
-      if (failedImages.length > 0) {
-        setExportWarning(
-          `Документ сформирован, но ${failedImages.length} скриншот(ов) не удалось загрузить и вставить — проверьте консоль браузера для подробностей.`,
-        );
-      }
-    } catch (error) {
-      console.error("Не удалось сформировать Word-документ", error);
-      setExportWarning("Не удалось сформировать документ — подробности в консоли браузера.");
-    } finally {
-      setIsExporting(false);
+  async function exportToWord() {
+    if (!site) return;
+    const { exportSiteToDocx } = await import("@/lib/docx-export");
+    const { failedImages } = await exportSiteToDocx(site);
+    if (failedImages.length > 0) {
+      return `Документ сформирован, но ${failedImages.length} скриншот(ов) не удалось загрузить и вставить — проверьте консоль браузера для подробностей.`;
     }
   }
 
@@ -57,18 +44,8 @@ export function SiteDetail() {
           <ArrowLeft className="size-3.5" />
           Все сайты
         </Link>
-        <Button variant="outline" size="sm" onClick={handleExport} disabled={isExporting}>
-          {isExporting ? <Loader2 className="animate-spin" /> : <FileDown />}
-          {isExporting ? "Формируем документ…" : "Экспорт в Word"}
-        </Button>
+        <ExportButton label="Экспорт в Word" onExport={exportToWord} />
       </div>
-
-      {exportWarning ? (
-        <p className="flex items-start gap-2 rounded-md border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-xs text-amber-700 dark:text-amber-400">
-          <AlertTriangle className="mt-0.5 size-3.5 shrink-0" />
-          {exportWarning}
-        </p>
-      ) : null}
 
       <div className="space-y-4">
         <div className="flex flex-wrap items-center gap-3">

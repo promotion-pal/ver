@@ -1,10 +1,8 @@
 import {
   BorderStyle,
-  Document,
   ExternalHyperlink,
   HeadingLevel,
   ImageRun,
-  Packer,
   Paragraph,
   ShadingType,
   Table,
@@ -15,6 +13,16 @@ import {
   type ParagraphChild,
 } from "docx";
 import type { Block, SiteDoc, SiteStatus } from "@/data/types";
+import {
+  BORDER_COLOR,
+  MUTED_COLOR,
+  bulleted,
+  cellBorder,
+  downloadDocx,
+  heading,
+  muted,
+  type DocElement,
+} from "@/lib/docx-common";
 
 const STATUS_LABEL: Record<SiteStatus, string> = {
   live: "В работе",
@@ -23,28 +31,7 @@ const STATUS_LABEL: Record<SiteStatus, string> = {
   archived: "В архиве",
 };
 
-const MUTED_COLOR = "595959";
-const BORDER_COLOR = "D9D9D9";
 const MAX_IMAGE_WIDTH = 560;
-
-type DocElement = Paragraph | Table;
-
-function cellBorder() {
-  const side = { style: BorderStyle.SINGLE, size: 2, color: BORDER_COLOR };
-  return { top: side, bottom: side, left: side, right: side };
-}
-
-function heading(text: string, level: (typeof HeadingLevel)[keyof typeof HeadingLevel], before = 240) {
-  return new Paragraph({ text, heading: level, spacing: { before, after: 120 } });
-}
-
-function muted(text: string, after = 120) {
-  return new Paragraph({ children: [new TextRun({ text, color: MUTED_COLOR })], spacing: { after } });
-}
-
-function bulleted(children: ParagraphChild[]) {
-  return new Paragraph({ children, bullet: { level: 0 }, spacing: { after: 60 } });
-}
 
 /**
  * Loads a public image the same way the page itself does — a plain
@@ -279,20 +266,7 @@ export async function exportSiteToDocx(site: SiteDoc): Promise<{ failedImages: s
     for (const block of version.blocks) children.push(...(await renderBlock(block, failedImages)));
   }
 
-  const doc = new Document({
-    sections: [{ children }],
-    styles: { default: { document: { run: { font: "Calibri", size: 22 } } } },
-  });
-
-  const blob = await Packer.toBlob(doc);
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = `${site.slug}-dokumentaciya.docx`;
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-  URL.revokeObjectURL(url);
+  await downloadDocx(children, `${site.slug}-dokumentaciya.docx`);
 
   return { failedImages };
 }

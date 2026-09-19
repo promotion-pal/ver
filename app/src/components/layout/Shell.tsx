@@ -10,7 +10,9 @@ export function Shell() {
             Хаб ДВГМУ
           </Link>
           <div className="flex items-center gap-4">
-            <span className="text-xs text-muted-foreground">Хаб документации по сайтам</span>
+            <Link to="/analytics" className="text-xs text-muted-foreground hover:text-foreground">
+              Аналитика
+            </Link>
             <ModeToggle />
           </div>
         </div>
