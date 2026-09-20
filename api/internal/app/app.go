@@ -56,12 +56,17 @@ func New(
 		service.NewWorkEntryService(storage.WorkEntryStorageNew(db, log)),
 	)
 
+	feedbackController := grpc.NewFeedbackController(
+		service.NewFeedbackService(storage.FeedbackStorageNew(db, log)),
+	)
+
 	grpcApp := grpcapp.New(
 		log,
 		authController,
 		grpc.NewAuthInterceptor(authService),
 		journalController,
 		workEntryController,
+		feedbackController,
 		cfg.GRPC.Port,
 	)
 

@@ -1,6 +1,7 @@
 import { Code, ConnectError, createClient, type Interceptor } from "@connectrpc/connect";
 import { createConnectTransport } from "@connectrpc/connect-web";
 import { AuthService } from "@ver/proto/service/auth.service_pb";
+import { FeedbackService } from "@ver/proto/service/feedback.service_pb";
 import { JournalService, WorkEntryService } from "@ver/proto/service/journal.service_pb";
 import { clearSession, getToken } from "@/lib/auth";
 
@@ -28,3 +29,4 @@ const transport = createConnectTransport({
 export const authClient = createClient(AuthService, transport);
 export const journalClient = createClient(JournalService, transport);
 export const workEntryClient = createClient(WorkEntryService, transport);
+export const feedbackClient = createClient(FeedbackService, transport);

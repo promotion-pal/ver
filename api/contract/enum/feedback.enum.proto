@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package contract.ver.enum;
+
+option go_package = "enum;enum_pb";
+
+// What the customer asks us to do.
+enum FeedbackAction {
+    FEEDBACK_ACTION_UNSPECIFIED = 0;
+    FEEDBACK_ACTION_FIX = 1;
+    FEEDBACK_ACTION_ADD = 2;
+    FEEDBACK_ACTION_CHANGE = 3;
+    FEEDBACK_ACTION_REMOVE = 4;
+    FEEDBACK_ACTION_QUESTION = 5;
+    FEEDBACK_ACTION_APPROVE = 6;
+}
+
+// Where the team is with this piece of feedback.
+enum FeedbackStatus {
+    FEEDBACK_STATUS_UNSPECIFIED = 0;
+    FEEDBACK_STATUS_NEW = 1;
+    FEEDBACK_STATUS_IN_PROGRESS = 2;
+    FEEDBACK_STATUS_DONE = 3;
+}

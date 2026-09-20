@@ -3,6 +3,7 @@ import { useMemo, useState } from "react";
 import { Link, Navigate, useParams } from "react-router-dom";
 import { ExportButton } from "@/components/common/ExportButton";
 import { BlockRenderer } from "@/components/blocks/BlockRenderer";
+import { FeedbackSection } from "@/components/feedback/FeedbackSection";
 import { StatusBadge } from "@/components/StatusBadge";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
@@ -102,6 +103,8 @@ export function SiteDetail() {
       </div>
 
       <BlockRenderer blocks={selected.blocks} />
+
+      <FeedbackSection site={site} version={selected} />
     </div>
   );
 }

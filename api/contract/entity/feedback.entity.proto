@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package contract.ver.entity;
+
+option go_package = "entity;entity_pb";
+
+import "google/protobuf/timestamp.proto";
+import "enum/feedback.enum.proto";
+
+// Feedback is a customer's comment on one version of one site.
+message Feedback {
+  int64 id = 1;
+
+  // The site and its documentation version the comment is about.
+  string site_slug = 2;
+  string site_name = 3;
+  string version_id = 4;
+  string version_label = 5;
+
+  string author_name = 6;
+  // Normalized: +7XXXXXXXXXX.
+  string phone = 7;
+  contract.ver.enum.FeedbackAction action = 8;
+  string comment = 9;
+  contract.ver.enum.FeedbackStatus status = 10;
+
+  google.protobuf.Timestamp created_at = 11;
+  google.protobuf.Timestamp updated_at = 12;
+}

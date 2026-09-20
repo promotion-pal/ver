@@ -30,6 +30,7 @@ func New(
 	authInterceptor connect.Interceptor,
 	journalController *grpc.JournalController,
 	workEntryController *grpc.WorkEntryController,
+	feedbackController *grpc.FeedbackController,
 	port int,
 ) *App {
 	mux := http.NewServeMux()
@@ -71,10 +72,14 @@ func New(
 	workEntryPath, workEntryHandler := serviceconnect.NewWorkEntryServiceHandler(workEntryController, protected)
 	mux.Handle(workEntryPath, workEntryHandler)
 
+	feedbackPath, feedbackHandler := serviceconnect.NewFeedbackServiceHandler(feedbackController, protected)
+	mux.Handle(feedbackPath, feedbackHandler)
+
 	reflector := grpcreflect.NewStaticReflector(
 		serviceconnect.AuthServiceName,
 		serviceconnect.JournalServiceName,
 		serviceconnect.WorkEntryServiceName,
+		serviceconnect.FeedbackServiceName,
 	)
 	mux.Handle(grpcreflect.NewHandlerV1(reflector))
 	mux.Handle(grpcreflect.NewHandlerV1Alpha(reflector))
