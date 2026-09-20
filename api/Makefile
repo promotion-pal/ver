@@ -129,17 +129,17 @@ logs:
 	docker compose -f docker-compose.dev.yml logs -f
 
 stack:
-	@echo "${GREEN}🐳  Starting full stack (API + DB) in Docker...${NC}"
+	@echo "${GREEN}🐳  Starting full stack (app + API + DB) in Docker, из корневого docker-compose.yml...${NC}"
 	@docker network inspect traefik-network >/dev/null 2>&1 || docker network create traefik-network
-	docker compose -f docker-compose.yml up -d --build
+	docker compose -f ../docker-compose.yml up -d --build
 	@echo "${GREEN}✅  API: http://ver_api:4000 (внутри traefik-network)${NC}"
 	@sleep 1 && make menu
 
 stack-down:
 	@echo "${RED}🐳  Stopping full stack...${NC}"
-	docker compose -f docker-compose.yml down
+	docker compose -f ../docker-compose.yml down
 	@echo "${GREEN}✅  Done!${NC}"
 	@sleep 1 && make menu
 
 stack-logs:
-	docker compose -f docker-compose.yml logs -f
+	docker compose -f ../docker-compose.yml logs -f
