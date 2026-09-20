@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+package contract.ver.service;
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = "service;service_pb";
+
+// Temporary shared-password access. Login is the only public procedure;
+// every other RPC needs "Authorization: Bearer <token>".
+service AuthService {
+    rpc Login (LoginRequest) returns (LoginResponse);
+    // Check succeeds only with a valid token — used by the UI to validate a stored session.
+    rpc Check (CheckRequest) returns (CheckResponse);
+}
+
+message LoginRequest {
+    string password = 1;
+}
+
+message LoginResponse {
+    string token = 1;
+    google.protobuf.Timestamp expires_at = 2;
+}
+
+message CheckRequest {}
+
+message CheckResponse {
+    google.protobuf.Timestamp expires_at = 1;
+}

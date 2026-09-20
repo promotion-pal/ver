@@ -1,5 +1,8 @@
+import { LogOut } from "lucide-react";
 import { Link, Outlet } from "react-router-dom";
 import { ModeToggle } from "@/components/mode-toggle";
+import { Button } from "@/components/ui/button";
+import { clearSession } from "@/lib/auth";
 
 export function Shell() {
   return (
@@ -14,6 +17,9 @@ export function Shell() {
               Аналитика
             </Link>
             <ModeToggle />
+            <Button variant="ghost" size="icon-sm" aria-label="Выйти" title="Выйти" onClick={clearSession}>
+              <LogOut />
+            </Button>
           </div>
         </div>
       </header>

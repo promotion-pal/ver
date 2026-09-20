@@ -6,7 +6,7 @@ dist/
 dist-ssr/
 
 # Postgres data volume (should not be versioned)
-api/api/db/postgres/
+api/db/postgres/
 
 # Env files (secrets)
 .env

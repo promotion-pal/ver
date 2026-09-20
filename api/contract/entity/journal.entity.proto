@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+package contract.ver.entity;
+
+option go_package = "entity;entity_pb";
+
+import "google/protobuf/timestamp.proto";
+import "enum/journal.enum.proto";
+
+message Journal {
+  int64 id = 1;
+  string slug = 2;
+  string employee = 3;
+  string role = 4;
+
+  google.protobuf.Timestamp created_at = 5;
+  google.protobuf.Timestamp updated_at = 6;
+}
+
+message WorkEntry {
+  int64 id = 1;
+  int64 journal_id = 2;
+
+  string date = 3;
+  string site_slug = 4;
+  contract.ver.enum.WorkCategory category = 5;
+
+  string title = 6;
+  string details = 7;
+  repeated string steps = 8;
+  string result = 9;
+  double hours = 10;
+
+  google.protobuf.Timestamp created_at = 11;
+  google.protobuf.Timestamp updated_at = 12;
+}

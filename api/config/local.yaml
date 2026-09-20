@@ -1,0 +1,13 @@
+env: local
+
+grpc:
+  port: 4050
+  timeout: 5s
+
+database:
+  host: localhost
+  port: 5446
+  user: root
+  password: password
+  dbname: ver_db
+  sslmode: disable

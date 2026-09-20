@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package contract.ver.enum;
+
+option go_package = "enum;enum_pb";
+
+enum WorkCategory {
+    WORK_CATEGORY_UNSPECIFIED = 0;
+    WORK_CATEGORY_DEV = 1;
+    WORK_CATEGORY_DOCS = 2;
+    WORK_CATEGORY_TESTING = 3;
+    WORK_CATEGORY_DEPLOY = 4;
+    WORK_CATEGORY_MEETING = 5;
+    WORK_CATEGORY_OTHER = 6;
+}

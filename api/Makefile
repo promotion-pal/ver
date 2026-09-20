@@ -1,5 +1,5 @@
-APP_DIR := api
-BINARY_NAME := tickets
+APP_DIR := .
+BINARY_NAME := ver-api
 GO := go
 MAIN_PATH := ./cmd
 CONFIG_PATH := --config=config/local.yaml
@@ -21,7 +21,7 @@ NC     := $(shell tput sgr0)
 
 menu:
 	@clear
-	@echo "${BLUE}                 🎫  DVGMU TICKETS SERVICE${NC}"
+	@echo "${BLUE}                 📒  DVGMU VER API${NC}"
 	@echo ""
 	@echo "${GREEN}  1. 🚀  Run server${NC}"
 	@echo "${CYAN}  2. 🔨  Build project${NC}"
@@ -87,6 +87,8 @@ lint:
 proto:
 	@echo "${CYAN}📝  Generating protobuf with Buf...${NC}"
 	cd $(APP_DIR)/$(PROTO_DIR) && buf generate
+	@echo "${CYAN}    Go  → $(APP_DIR)/$(PROTO_DIR)/gen/go${NC}"
+	@echo "${CYAN}    TS  → packages/proto (на одном уровне с api и app)${NC}"
 	@echo "${GREEN}✅  Done!${NC}"
 	@sleep 1 && make menu
 
@@ -130,7 +132,7 @@ stack:
 	@echo "${GREEN}🐳  Starting full stack (API + DB) in Docker...${NC}"
 	@docker network inspect traefik-network >/dev/null 2>&1 || docker network create traefik-network
 	docker compose -f docker-compose.yml up -d --build
-	@echo "${GREEN}✅  API: http://dvgmu_apps_ticket_api:4000 (внутри traefik-network)${NC}"
+	@echo "${GREEN}✅  API: http://ver_api:4000 (внутри traefik-network)${NC}"
 	@sleep 1 && make menu
 
 stack-down:

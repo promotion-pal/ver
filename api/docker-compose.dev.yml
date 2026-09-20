@@ -1,11 +1,13 @@
 services:
-  dvgmu_apps_ticket_db:
-    container_name: "dvgmu_apps_ticket_db"
+  ver_db_dev:
+    container_name: "ver_db_dev"
     image: postgres:17
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
     volumes:
-      - ./api/db/postgres:/var/lib/postgresql/data
+      - ./db/postgres:/var/lib/postgresql/data
+    ports:
+      - "5446:5432"
     restart: unless-stopped

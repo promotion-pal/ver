@@ -1,13 +1,13 @@
 services:
-  dvgmu_apps_ticket_db:
-    container_name: "dvgmu_apps_ticket_db"
+  ver_db:
+    container_name: "ver_db"
     image: postgres:17
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
     volumes:
-      - dvgmu_apps_ticket_pgdata:/var/lib/postgresql/data
+      - ver_pgdata:/var/lib/postgresql/data
     networks:
       - traefik-network
     restart: unless-stopped
@@ -17,25 +17,26 @@ services:
       timeout: 3s
       retries: 10
 
-  dvgmu_apps_ticket_api:
-    container_name: "dvgmu_apps_ticket_api"
+  ver_api:
+    container_name: "ver_api"
     build:
-      context: "./api"
+      context: "."
       dockerfile: "Dockerfile"
       network: host
     restart: unless-stopped
     depends_on:
-      dvgmu_apps_ticket_db:
+      ver_db:
         condition: service_healthy
     environment:
-      DB_HOST: ${POSTGRES_HOST:-dvgmu_apps_ticket_db}
+      DB_HOST: ${POSTGRES_HOST:-ver_db}
       DB_PORT: "5432"
       DB_USER: ${POSTGRES_USER}
       DB_PASSWORD: ${POSTGRES_PASSWORD}
       DB_NAME: ${POSTGRES_DB}
       DB_SSLMODE: disable
       GRPC_PORT: "4000"
-      TZ: ${TICKET_TZ:-Asia/Vladivostok}
+      ACCESS_PASSWORD: ${ACCESS_PASSWORD:?ACCESS_PASSWORD is required}
+      TZ: ${API_TZ:-Asia/Vladivostok}
     networks:
       - traefik-network
 
@@ -44,4 +45,4 @@ networks:
     external: true
 
 volumes:
-  dvgmu_apps_ticket_pgdata:
+  ver_pgdata:

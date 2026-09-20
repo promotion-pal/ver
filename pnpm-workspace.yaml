@@ -1,0 +1,6 @@
+packages:
+  - app
+  - packages
+
+minimumReleaseAgeExclude:
+  - lucide-react@1.47.0

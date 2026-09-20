@@ -1,0 +1,107 @@
+syntax = "proto3";
+
+package contract.ver.service;
+
+import "entity/journal.entity.proto";
+import "enum/journal.enum.proto";
+
+option go_package = "service;service_pb";
+
+service JournalService {
+    rpc JournalList (JournalListRequest) returns (JournalListResponse);
+    rpc JournalBySlug (JournalBySlugRequest) returns (JournalBySlugResponse);
+    rpc JournalCreate (JournalCreateRequest) returns (JournalCreateResponse);
+}
+
+message JournalListRequest {}
+
+message JournalListResponse {
+    repeated contract.ver.entity.Journal journals = 1;
+}
+
+message JournalBySlugRequest {
+    string slug = 1;
+}
+
+message JournalBySlugResponse {
+    contract.ver.entity.Journal entity = 1;
+}
+
+message JournalCreateRequest {
+    string slug = 1;
+    string employee = 2;
+    string role = 3;
+}
+
+message JournalCreateResponse {
+    int64 id = 1;
+    bool success = 2;
+    string message = 3;
+}
+
+service WorkEntryService {
+    rpc WorkEntryFetch (WorkEntryFetchRequest) returns (WorkEntryFetchResponse);
+    rpc WorkEntryCreate (WorkEntryCreateRequest) returns (WorkEntryCreateResponse);
+    rpc WorkEntryUpdate (WorkEntryUpdateRequest) returns (WorkEntryUpdateResponse);
+    rpc WorkEntryDelete (WorkEntryDeleteRequest) returns (WorkEntryDeleteResponse);
+}
+
+// All filters are optional; without journal_id entries of every journal are returned.
+message WorkEntryFetchRequest {
+    optional int64 journal_id = 1;
+    // Inclusive ISO days, YYYY-MM-DD.
+    optional string from_date = 2;
+    optional string to_date = 3;
+    optional string site_slug = 4;
+    optional contract.ver.enum.WorkCategory category = 5;
+}
+
+message WorkEntryFetchResponse {
+    repeated contract.ver.entity.WorkEntry entries = 1;
+}
+
+message WorkEntryCreateRequest {
+    int64 journal_id = 1;
+    string date = 2;
+    string site_slug = 3;
+    contract.ver.enum.WorkCategory category = 4;
+    string title = 5;
+    string details = 6;
+    repeated string steps = 7;
+    string result = 8;
+    double hours = 9;
+}
+
+message WorkEntryCreateResponse {
+    int64 id = 1;
+    bool success = 2;
+    string message = 3;
+}
+
+message WorkEntryUpdateRequest {
+    int64 id = 1;
+    string date = 2;
+    string site_slug = 3;
+    contract.ver.enum.WorkCategory category = 4;
+    string title = 5;
+    string details = 6;
+    repeated string steps = 7;
+    string result = 8;
+    double hours = 9;
+}
+
+message WorkEntryUpdateResponse {
+    int64 id = 1;
+    bool success = 2;
+    string message = 3;
+}
+
+message WorkEntryDeleteRequest {
+    int64 id = 1;
+}
+
+message WorkEntryDeleteResponse {
+    int64 id = 1;
+    bool success = 2;
+    string message = 3;
+}

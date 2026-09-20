@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { ActivityChart } from "@/components/common/ActivityChart";
 import { BarList } from "@/components/common/BarList";
+import { LoadState } from "@/components/common/LoadState";
 import { PeriodSwitcher } from "@/components/common/PeriodSwitcher";
 import { Section } from "@/components/common/Section";
 import { StatTiles } from "@/components/common/StatTiles";
@@ -14,11 +15,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { journals } from "@/data/journals";
+import { fetchEntries, listJournals } from "@/lib/journal-api";
 import {
   CATEGORY_LABEL,
   eachDay,
-  entriesInRange,
   formatDate,
   formatHours,
   formatRange,
@@ -32,17 +32,26 @@ import {
   totalHours,
   type Period,
 } from "@/lib/journal";
+import { useAsync } from "@/lib/use-async";
 
 export function Analytics() {
   const [period, setPeriod] = useState<Period>("month");
   const [anchor, setAnchor] = useState(todayISO);
 
   const range = rangeFor(anchor, period);
+  const state = useAsync(
+    async () => {
+      const [journals, entries] = await Promise.all([listJournals(), fetchEntries({ range })]);
+      return { journals, entries };
+    },
+    [range.from, range.to],
+  );
+  const journals = state.data?.journals ?? [];
+  const all = state.data?.entries ?? [];
   const perJournal = journals.map((journal) => ({
     journal,
-    entries: entriesInRange(journal.entries, range),
+    entries: all.filter((e) => e.journalId === journal.id),
   }));
-  const all = perJournal.flatMap((p) => p.entries);
   const stats = summarize(all);
 
   const journalBars = perJournal
@@ -80,6 +89,10 @@ export function Analytics() {
         onAnchorChange={setAnchor}
       />
 
+      <LoadState loading={state.loading && !state.data} error={state.error} onRetry={state.reload} />
+
+      {state.data ? (
+        <>
       <Section title="Общие показатели">
         <StatTiles
           items={[
@@ -98,7 +111,7 @@ export function Analytics() {
         <BarList items={journalBars} format={formatHours} />
         <div className="grid gap-4 md:grid-cols-2">
           {perJournal.map(({ journal, entries }) => (
-            <div key={journal.slug} className="space-y-3 rounded-lg border p-4">
+            <div key={journal.id} className="space-y-3 rounded-lg border p-4">
               <div className="flex items-start justify-between gap-3">
                 <div>
                   <Link
@@ -189,6 +202,8 @@ export function Analytics() {
           />
         </Section>
       </div>
+        </>
+      ) : null}
     </div>
   );
 }

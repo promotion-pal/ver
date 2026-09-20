@@ -101,10 +101,11 @@ function entryCell(entry: WorkEntry): Paragraph[] {
 /** A journal's entries over a period: summary, per-project totals, then a table per day. */
 export async function exportJournalList(
   journal: WorkJournal,
+  allEntries: WorkEntry[],
   range: DateRange,
   period: Period,
 ): Promise<void> {
-  const entries = entriesInRange(journal.entries, range);
+  const entries = entriesInRange(allEntries, range);
   const stats = summarize(entries);
 
   const children: DocElement[] = [
@@ -144,8 +145,12 @@ export async function exportJournalList(
 }
 
 /** A one-day work report for a single employee, ready to send or sign. */
-export async function exportJournalDayReport(journal: WorkJournal, date: string): Promise<void> {
-  const entries = entriesInRange(journal.entries, { from: date, to: date });
+export async function exportJournalDayReport(
+  journal: WorkJournal,
+  allEntries: WorkEntry[],
+  date: string,
+): Promise<void> {
+  const entries = entriesInRange(allEntries, { from: date, to: date });
 
   const children: DocElement[] = [
     new Paragraph({ text: "Отчёт о работе за день", heading: HeadingLevel.TITLE }),

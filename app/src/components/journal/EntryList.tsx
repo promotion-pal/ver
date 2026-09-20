@@ -15,11 +15,14 @@ import {
 export function EntryList({
   entries,
   renderDayAction,
+  renderEntryAction,
   emptyText = "За выбранный период записей нет.",
 }: {
   entries: WorkEntry[];
   /** Extra control in each day's header, e.g. a per-day report export. */
   renderDayAction?: (date: string, dayEntries: WorkEntry[]) => ReactNode;
+  /** Extra control next to each entry's hours, e.g. edit / delete. */
+  renderEntryAction?: (entry: WorkEntry) => ReactNode;
   emptyText?: string;
 }) {
   if (entries.length === 0) return <p className="text-sm text-muted-foreground">{emptyText}</p>;
@@ -38,8 +41,8 @@ export function EntryList({
             {renderDayAction?.(date, dayEntries)}
           </div>
           <ul className="divide-y rounded-lg border">
-            {dayEntries.map((entry, i) => (
-              <li key={i} className="flex items-start justify-between gap-4 p-4">
+            {dayEntries.map((entry) => (
+              <li key={entry.id} className="flex items-start justify-between gap-4 p-4">
                 <div className="min-w-0 space-y-1.5">
                   <p className="text-sm font-medium">{entry.title}</p>
                   {entry.details ? (
@@ -78,9 +81,10 @@ export function EntryList({
                     </Badge>
                   </div>
                 </div>
-                <span className="shrink-0 font-mono text-sm tabular-nums">
-                  {formatHours(entry.hours)}
-                </span>
+                <div className="flex shrink-0 items-center gap-1">
+                  <span className="font-mono text-sm tabular-nums">{formatHours(entry.hours)}</span>
+                  {renderEntryAction?.(entry)}
+                </div>
               </li>
             ))}
           </ul>
