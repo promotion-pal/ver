@@ -4,6 +4,7 @@ import { Shell } from "@/components/layout/Shell";
 import { Analytics } from "@/pages/Analytics";
 import { Hub } from "@/pages/Hub";
 import { JournalPage } from "@/pages/JournalPage";
+import { Schemes } from "@/pages/Schemes";
 import { SiteDetail } from "@/pages/SiteDetail";
 
 function App() {
@@ -15,6 +16,7 @@ function App() {
           <Route path="sites/:slug" element={<SiteDetail />} />
           <Route path="journals/:slug" element={<JournalPage />} />
           <Route path="analytics" element={<Analytics />} />
+          <Route path="schemes" element={<Schemes />} />
         </Route>
       </Routes>
     </AuthGate>

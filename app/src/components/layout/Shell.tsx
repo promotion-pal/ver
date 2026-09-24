@@ -16,6 +16,9 @@ export function Shell() {
             <Link to="/analytics" className="text-xs text-muted-foreground hover:text-foreground">
               Аналитика
             </Link>
+            <Link to="/schemes" className="text-xs text-muted-foreground hover:text-foreground">
+              Схемы
+            </Link>
             <ModeToggle />
             <Button variant="ghost" size="icon-sm" aria-label="Выйти" title="Выйти" onClick={clearSession}>
               <LogOut />
