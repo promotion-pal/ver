@@ -23,6 +23,7 @@ import {
   muted,
   type DocElement,
 } from "@/lib/docx-common";
+import { drawioToPng } from "@/lib/drawio";
 
 const STATUS_LABEL: Record<SiteStatus, string> = {
   live: "В работе",
@@ -222,6 +223,39 @@ async function renderBlock(block: Block, failedImages: string[]): Promise<DocEle
         );
         if (item.description) out.push(muted(item.description, 160));
       }
+      break;
+    }
+
+    case "scheme": {
+      try {
+        const png = await drawioToPng(block.xml);
+        const scale = png.width > MAX_IMAGE_WIDTH ? MAX_IMAGE_WIDTH / png.width : 1;
+        out.push(
+          new Paragraph({
+            children: [
+              new ImageRun({
+                type: "png",
+                data: png.data,
+                transformation: {
+                  width: Math.round(png.width * scale),
+                  height: Math.round(png.height * scale),
+                },
+              }),
+            ],
+            spacing: { before: 160, after: 40 },
+          }),
+        );
+      } catch (err) {
+        console.warn("[docx-export] не удалось отрисовать схему:", err);
+        failedImages.push(block.heading ?? "схема");
+        out.push(
+          new Paragraph({
+            children: [new TextRun({ text: "[схема недоступна]", italics: true, color: MUTED_COLOR })],
+            spacing: { before: 160, after: 40 },
+          }),
+        );
+      }
+      if (block.caption) out.push(muted(block.caption, 160));
       break;
     }
   }

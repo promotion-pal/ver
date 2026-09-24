@@ -40,6 +40,15 @@ export type Block =
        */
       type: "questions";
       items: { question: string; hint?: string }[];
+    })
+  | (BlockBase & {
+      /**
+       * A draw.io diagram. Keep the file in `src/docs/schema/` and pass its
+       * contents: `import scheme from "@/docs/schema/name.drawio?raw"`.
+       */
+      type: "scheme";
+      xml: string;
+      caption?: string;
     });
 
 /**

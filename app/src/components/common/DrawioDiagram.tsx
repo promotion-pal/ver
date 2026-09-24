@@ -1,34 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-
-const VIEWER_URL = "https://viewer.diagrams.net/js/viewer-static.min.js";
-
-declare global {
-  interface Window {
-    GraphViewer?: {
-      createViewerForElement: (element: HTMLElement, callback?: (viewer: unknown) => void) => void;
-    };
-  }
-}
-
-let viewerPromise: Promise<void> | null = null;
-
-/** Loads the official draw.io viewer once and shares it between all diagrams. */
-function loadViewer(): Promise<void> {
-  if (window.GraphViewer) return Promise.resolve();
-  viewerPromise ??= new Promise<void>((resolve, reject) => {
-    const script = document.createElement("script");
-    script.src = VIEWER_URL;
-    script.async = true;
-    script.onload = () => resolve();
-    script.onerror = () => {
-      viewerPromise = null;
-      script.remove();
-      reject(new Error("draw.io viewer failed to load"));
-    };
-    document.head.appendChild(script);
-  });
-  return viewerPromise;
-}
+import { mountDrawio } from "@/lib/drawio";
 
 /**
  * Renders a .drawio diagram with the draw.io viewer (zoom, pages, lightbox).
@@ -70,13 +41,8 @@ export function DrawioDiagram({
         return r.text();
       }) : null);
       if (content == null) throw new Error("no diagram: pass xml or src");
-      await loadViewer();
       if (cancelled) return;
-
-      const target = document.createElement("div");
-      target.className = "mxgraph";
-      target.style.maxWidth = "100%";
-      target.dataset.mxgraph = JSON.stringify({
+      await mountDrawio(element, {
         xml: content,
         page,
         toolbar: toolbar || undefined,
@@ -86,9 +52,8 @@ export function DrawioDiagram({
         "auto-fit": true,
         highlight: "#0000ff",
       });
-      element.replaceChildren(target);
-      window.GraphViewer!.createViewerForElement(target);
-      setLoading(false);
+      if (cancelled) element.replaceChildren();
+      else setLoading(false);
     })().catch((e: unknown) => {
       if (cancelled) return;
       setError(e instanceof Error ? e.message : String(e));

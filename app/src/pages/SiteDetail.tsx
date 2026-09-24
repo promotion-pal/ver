@@ -43,7 +43,7 @@ export function SiteDetail() {
           className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"
         >
           <ArrowLeft className="size-3.5" />
-          Все сайты
+          Все проекты
         </Link>
         <ExportButton label="Экспорт в Word" onExport={exportToWord} />
       </div>

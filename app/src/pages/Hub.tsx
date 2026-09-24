@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { sites } from "@/data/sites";
 import { createJournal, fetchEntries, listJournals } from "@/lib/journal-api";
-import { rangeFor, todayISO } from "@/lib/journal";
+import { plural, rangeFor, todayISO } from "@/lib/journal";
 import { useAsync } from "@/lib/use-async";
 
 export function Hub() {
@@ -36,9 +36,10 @@ export function Hub() {
   return (
     <div className="space-y-8">
       <div className="space-y-1">
-        <h1 className="text-2xl font-semibold tracking-tight">Сайты</h1>
+        <h1 className="text-2xl font-semibold tracking-tight">Проекты</h1>
         <p className="text-sm text-muted-foreground">
-          {sites.length} {sites.length === 1 ? "сайт" : "сайта"} на сопровождении.
+          {sites.length} {plural(sites.length, "проект", "проекта", "проектов")} на сопровождении:
+          документация, схемы и версии для отчётности.
         </p>
       </div>
 

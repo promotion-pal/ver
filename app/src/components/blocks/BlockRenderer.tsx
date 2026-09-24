@@ -3,6 +3,7 @@ import { GalleryBlock } from "@/components/blocks/GalleryBlock";
 import { LinksBlock } from "@/components/blocks/LinksBlock";
 import { PagesBlock } from "@/components/blocks/PagesBlock";
 import { QuestionsBlock } from "@/components/blocks/QuestionsBlock";
+import { SchemeBlock } from "@/components/blocks/SchemeBlock";
 import { StatsBlock } from "@/components/blocks/StatsBlock";
 import { TableBlockView } from "@/components/blocks/TableBlockView";
 import { TextBlock } from "@/components/blocks/TextBlock";
@@ -25,6 +26,7 @@ export function BlockRenderer({ blocks }: { blocks: Block[] }) {
           {block.type === "checklist" ? <ChecklistBlock block={block} /> : null}
           {block.type === "links" ? <LinksBlock block={block} /> : null}
           {block.type === "questions" ? <QuestionsBlock block={block} /> : null}
+          {block.type === "scheme" ? <SchemeBlock block={block} /> : null}
         </section>
       ))}
     </div>

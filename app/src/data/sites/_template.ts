@@ -58,6 +58,14 @@ export const templateSite: SiteDoc = {
             },
           ],
         },
+        // Схема draw.io: файл кладём в src/docs/schema/ и импортируем
+        // вверху файла — `import myScheme from "@/docs/schema/my-site.drawio?raw";`
+        // {
+        //   type: "scheme",
+        //   heading: "Архитектура",
+        //   xml: myScheme,
+        //   caption: "Что показывает схема.",
+        // },
         {
           type: "checklist",
           heading: "Выполнено",
