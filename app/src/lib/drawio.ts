@@ -42,12 +42,18 @@ export function loadDrawioViewer(): Promise<void> {
   return viewerPromise;
 }
 
-/** Mounts a draw.io viewer for `config` (the viewer's data-mxgraph options) into `container`. */
+/**
+ * Mounts a draw.io viewer for `config` (the viewer's data-mxgraph options) into
+ * `container`. Once `signal` is aborted the container is left untouched, so a
+ * superseded mount can't wipe out the diagram drawn by the newer one.
+ */
 export async function mountDrawio(
   container: HTMLElement,
   config: Record<string, unknown>,
+  signal?: AbortSignal,
 ): Promise<DrawioViewer> {
   await loadDrawioViewer();
+  signal?.throwIfAborted();
   const target = document.createElement("div");
   target.className = "mxgraph";
   target.style.maxWidth = "100%";

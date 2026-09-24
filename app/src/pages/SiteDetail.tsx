@@ -102,7 +102,7 @@ export function SiteDetail() {
         ) : null}
       </div>
 
-      <BlockRenderer blocks={selected.blocks} />
+      <BlockRenderer blocks={selected.blocks} siteSlug={site.slug} />
 
       <FeedbackSection site={site} version={selected} />
     </div>

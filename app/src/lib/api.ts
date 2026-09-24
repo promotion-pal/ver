@@ -3,6 +3,7 @@ import { createConnectTransport } from "@connectrpc/connect-web";
 import { AuthService } from "@ver/proto/service/auth.service_pb";
 import { FeedbackService } from "@ver/proto/service/feedback.service_pb";
 import { JournalService, WorkEntryService } from "@ver/proto/service/journal.service_pb";
+import { SchemeStageService } from "@ver/proto/service/scheme.service_pb";
 import { clearSession, getToken } from "@/lib/auth";
 
 /** Adds the session token; a server-side "unauthenticated" drops the session, which shows the login screen. */
@@ -30,3 +31,4 @@ export const authClient = createClient(AuthService, transport);
 export const journalClient = createClient(JournalService, transport);
 export const workEntryClient = createClient(WorkEntryService, transport);
 export const feedbackClient = createClient(FeedbackService, transport);
+export const schemeStageClient = createClient(SchemeStageService, transport);

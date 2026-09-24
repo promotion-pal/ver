@@ -60,6 +60,10 @@ func New(
 		service.NewFeedbackService(storage.FeedbackStorageNew(db, log)),
 	)
 
+	schemeStageController := grpc.NewSchemeStageController(
+		service.NewSchemeStageService(storage.SchemeStageStorageNew(db, log)),
+	)
+
 	grpcApp := grpcapp.New(
 		log,
 		authController,
@@ -67,6 +71,7 @@ func New(
 		journalController,
 		workEntryController,
 		feedbackController,
+		schemeStageController,
 		cfg.GRPC.Port,
 	)
 

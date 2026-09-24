@@ -12,6 +12,7 @@ import {
   WidthType,
   type ParagraphChild,
 } from "docx";
+import type { Stage } from "@/data/schemes/types";
 import type { Block, SiteDoc, SiteStatus } from "@/data/types";
 import {
   BORDER_COLOR,
@@ -24,6 +25,8 @@ import {
   type DocElement,
 } from "@/lib/docx-common";
 import { drawioToPng } from "@/lib/drawio";
+import { STAGE_STATUS_LABEL, fetchStages, formatStageDates, isOverdue } from "@/lib/scheme-api";
+import { todayISO } from "@/lib/journal";
 
 const STATUS_LABEL: Record<SiteStatus, string> = {
   live: "В работе",
@@ -263,6 +266,76 @@ async function renderBlock(block: Block, failedImages: string[]): Promise<DocEle
   return out;
 }
 
+/** The work plan of one scheme as a table: stage, dates, status. */
+function renderStages(stages: Stage[]): DocElement[] {
+  const today = todayISO();
+  const cell = (text: string, opts: { bold?: boolean; color?: string; fill?: string } = {}) =>
+    new TableCell({
+      borders: cellBorder(),
+      shading: opts.fill ? { type: ShadingType.CLEAR, fill: opts.fill } : undefined,
+      children: [new Paragraph({ children: [new TextRun({ text, bold: opts.bold, color: opts.color })] })],
+    });
+  const headerRow = new TableRow({
+    tableHeader: true,
+    children: ["№", "Этап", "Сроки", "Статус"].map((col) => cell(col, { bold: true, fill: "F2F2F2" })),
+  });
+  const rows = stages.map((stage, i) => {
+    const late = isOverdue(stage, today);
+    return new TableRow({
+      children: [
+        cell(String(i + 1)),
+        new TableCell({
+          borders: cellBorder(),
+          children: [
+            new Paragraph({ children: [new TextRun({ text: stage.title, bold: true })] }),
+            ...(stage.details ? [new Paragraph({ children: [new TextRun({ text: stage.details, color: MUTED_COLOR })] })] : []),
+          ],
+        }),
+        cell(formatStageDates(stage), { color: late ? "C00000" : undefined }),
+        cell(late ? `${STAGE_STATUS_LABEL[stage.status]}, просрочен` : STAGE_STATUS_LABEL[stage.status], {
+          color: late ? "C00000" : undefined,
+        }),
+      ],
+    });
+  });
+  const done = stages.filter((s) => s.status === "done").length;
+  return [
+    muted(`Готово ${done} из ${stages.length}`, 80),
+    new Table({ width: { size: 100, type: WidthType.PERCENTAGE }, rows: [headerRow, ...rows] }),
+    muted("", 160),
+  ];
+}
+
+/**
+ * Work plans of the site's schemes, current state — they aren't tied to a
+ * version, so they go once after all versions, titled by the latest heading.
+ */
+async function renderSchemePlans(site: SiteDoc): Promise<DocElement[]> {
+  const schemes = new Map<string, string>();
+  for (const version of site.versions) {
+    for (const block of version.blocks) {
+      if (block.type === "scheme") schemes.set(block.id, block.heading ?? block.id);
+    }
+  }
+  if (schemes.size === 0) return [];
+
+  const out: DocElement[] = [heading("План работ по схемам", HeadingLevel.HEADING_1, 480)];
+  let stages: Stage[];
+  try {
+    stages = await fetchStages(site.slug);
+  } catch (err) {
+    console.warn("[docx-export] не удалось загрузить план работ:", err);
+    out.push(muted("[план работ недоступен: не удалось загрузить данные с сервера]", 160));
+    return out;
+  }
+  for (const [id, title] of schemes) {
+    out.push(heading(title, HeadingLevel.HEADING_3));
+    const own = stages.filter((s) => s.schemeId === id);
+    out.push(...(own.length > 0 ? renderStages(own) : [muted("Этапов пока нет.", 160)]));
+  }
+  return out;
+}
+
 /**
  * Builds a Word document from every version of a site's documentation —
  * same block components as the page, just rendered as OOXML — and
@@ -299,6 +372,8 @@ export async function exportSiteToDocx(site: SiteDoc): Promise<{ failedImages: s
     children.push(muted(version.date, 200));
     for (const block of version.blocks) children.push(...(await renderBlock(block, failedImages)));
   }
+
+  children.push(...(await renderSchemePlans(site)));
 
   await downloadDocx(children, `${site.slug}-dokumentaciya.docx`);
 

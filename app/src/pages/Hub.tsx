@@ -65,7 +65,7 @@ export function Hub() {
           <div className="space-y-1">
             <h2 className="text-2xl font-semibold tracking-tight">Журналы работы</h2>
             <p className="text-sm text-muted-foreground">
-              Что выполнено за день, неделю и месяц — по сотрудникам, с экспортом в Word.
+              Сбор аналитики по работе сотрудников.
             </p>
           </div>
           <Button variant="outline" size="sm" onClick={() => setCreating(true)}>

@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package contract.ver.entity;
+
+option go_package = "entity;entity_pb";
+
+import "google/protobuf/timestamp.proto";
+import "enum/scheme.enum.proto";
+
+// SchemeStage is one step of the work plan kept next to a project's scheme:
+// what has to be done and by when.
+message SchemeStage {
+  int64 id = 1;
+
+  // The project and the scheme (its `id` in the project data) the stage belongs to.
+  string site_slug = 2;
+  string scheme_id = 3;
+
+  string title = 4;
+  string details = 5;
+  // ISO days, YYYY-MM-DD; empty when not set.
+  string start_date = 6;
+  string due_date = 7;
+  contract.ver.enum.SchemeStageStatus status = 8;
+
+  google.protobuf.Timestamp created_at = 9;
+  google.protobuf.Timestamp updated_at = 10;
+}

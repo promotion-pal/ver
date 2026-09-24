@@ -1,0 +1,68 @@
+syntax = "proto3";
+
+package contract.ver.service;
+
+import "entity/scheme.entity.proto";
+import "enum/scheme.enum.proto";
+
+option go_package = "service;service_pb";
+
+service SchemeStageService {
+    rpc SchemeStageFetch (SchemeStageFetchRequest) returns (SchemeStageFetchResponse);
+    rpc SchemeStageCreate (SchemeStageCreateRequest) returns (SchemeStageCreateResponse);
+    rpc SchemeStageUpdate (SchemeStageUpdateRequest) returns (SchemeStageUpdateResponse);
+    rpc SchemeStageDelete (SchemeStageDeleteRequest) returns (SchemeStageDeleteResponse);
+}
+
+// Without scheme_id, stages of every scheme of the project are returned.
+// Ordered by due date (stages without one last), then by id.
+message SchemeStageFetchRequest {
+    string site_slug = 1;
+    optional string scheme_id = 2;
+}
+
+message SchemeStageFetchResponse {
+    repeated contract.ver.entity.SchemeStage stages = 1;
+}
+
+message SchemeStageCreateRequest {
+    string site_slug = 1;
+    string scheme_id = 2;
+    string title = 3;
+    string details = 4;
+    string start_date = 5;
+    string due_date = 6;
+    contract.ver.enum.SchemeStageStatus status = 7;
+}
+
+message SchemeStageCreateResponse {
+    int64 id = 1;
+    bool success = 2;
+    string message = 3;
+}
+
+// Replaces the stage's content; the project and scheme don't change.
+message SchemeStageUpdateRequest {
+    int64 id = 1;
+    string title = 2;
+    string details = 3;
+    string start_date = 4;
+    string due_date = 5;
+    contract.ver.enum.SchemeStageStatus status = 6;
+}
+
+message SchemeStageUpdateResponse {
+    int64 id = 1;
+    bool success = 2;
+    string message = 3;
+}
+
+message SchemeStageDeleteRequest {
+    int64 id = 1;
+}
+
+message SchemeStageDeleteResponse {
+    int64 id = 1;
+    bool success = 2;
+    string message = 3;
+}

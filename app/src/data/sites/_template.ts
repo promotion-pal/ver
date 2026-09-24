@@ -62,6 +62,7 @@ export const templateSite: SiteDoc = {
         // вверху файла — `import myScheme from "@/docs/schema/my-site.drawio?raw";`
         // {
         //   type: "scheme",
+        //   id: "architecture", // один и тот же во всех версиях — к нему привязан план работ
         //   heading: "Архитектура",
         //   xml: myScheme,
         //   caption: "Что показывает схема.",

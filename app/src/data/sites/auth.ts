@@ -15,6 +15,7 @@ export const auth: SiteDoc = {
       blocks: [
         {
           type: "scheme",
+          id: "auth",
           heading: "Схема авторизации",
           xml: authScheme,
           caption: "AuthService, синхронизация AD ↔ MDM, хранение данных пользователей.",

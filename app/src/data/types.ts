@@ -47,6 +47,12 @@ export type Block =
        * contents: `import scheme from "@/docs/schema/name.drawio?raw"`.
        */
       type: "scheme";
+      /**
+       * Stable key of the scheme within the project — its work plan
+       * (stages and deadlines) is stored under it, so keep the same id
+       * in every version that shows this scheme.
+       */
+      id: string;
       xml: string;
       caption?: string;
     });

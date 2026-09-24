@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package contract.ver.enum;
+
+option go_package = "enum;enum_pb";
+
+// Where a scheme stage is.
+enum SchemeStageStatus {
+    SCHEME_STAGE_STATUS_UNSPECIFIED = 0;
+    SCHEME_STAGE_STATUS_PLANNED = 1;
+    SCHEME_STAGE_STATUS_IN_PROGRESS = 2;
+    SCHEME_STAGE_STATUS_DONE = 3;
+}

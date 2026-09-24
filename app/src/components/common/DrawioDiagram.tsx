@@ -31,17 +31,16 @@ export function DrawioDiagram({
   useEffect(() => {
     const element = ref.current;
     if (!element) return;
-    let cancelled = false;
+    const controller = new AbortController();
     setError(null);
     setLoading(true);
 
     (async () => {
-      const content = xml ?? (src ? await fetch(src).then((r) => {
+      const content = xml ?? (src ? await fetch(src, { signal: controller.signal }).then((r) => {
         if (!r.ok) throw new Error(`HTTP ${r.status}`);
         return r.text();
       }) : null);
       if (content == null) throw new Error("no diagram: pass xml or src");
-      if (cancelled) return;
       await mountDrawio(element, {
         xml: content,
         page,
@@ -51,17 +50,16 @@ export function DrawioDiagram({
         resize: true,
         "auto-fit": true,
         highlight: "#0000ff",
-      });
-      if (cancelled) element.replaceChildren();
-      else setLoading(false);
+      }, controller.signal);
+      if (!controller.signal.aborted) setLoading(false);
     })().catch((e: unknown) => {
-      if (cancelled) return;
+      if (controller.signal.aborted) return;
       setError(e instanceof Error ? e.message : String(e));
       setLoading(false);
     });
 
     return () => {
-      cancelled = true;
+      controller.abort();
       element.replaceChildren();
     };
   }, [xml, src, page, toolbar, lightbox]);

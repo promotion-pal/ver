@@ -9,7 +9,7 @@ import { TableBlockView } from "@/components/blocks/TableBlockView";
 import { TextBlock } from "@/components/blocks/TextBlock";
 import type { Block } from "@/data/types";
 
-export function BlockRenderer({ blocks }: { blocks: Block[] }) {
+export function BlockRenderer({ blocks, siteSlug }: { blocks: Block[]; siteSlug: string }) {
   return (
     <div className="space-y-8">
       {blocks.map((block, i) => (
@@ -26,7 +26,7 @@ export function BlockRenderer({ blocks }: { blocks: Block[] }) {
           {block.type === "checklist" ? <ChecklistBlock block={block} /> : null}
           {block.type === "links" ? <LinksBlock block={block} /> : null}
           {block.type === "questions" ? <QuestionsBlock block={block} /> : null}
-          {block.type === "scheme" ? <SchemeBlock block={block} /> : null}
+          {block.type === "scheme" ? <SchemeBlock block={block} siteSlug={siteSlug} /> : null}
         </section>
       ))}
     </div>
